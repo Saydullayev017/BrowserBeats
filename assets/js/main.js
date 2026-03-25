@@ -29,7 +29,8 @@ let analyser;
 let canvasCtx;
 let animationId;
 let mediaSessionSupported = false;
-let isIOS = false;
+let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
 const playerState = {
     currentTrackIndex: -1,
@@ -667,7 +668,6 @@ const playTrack = (index) => {
         
         if (isIOS) {
             videoHelper.play().catch(() => {});
-            bgAudioPlayer.play().catch(() => {});
         }
     }).catch(error => {
         console.error('Ошибка воспроизведения:', error);
@@ -693,10 +693,6 @@ const togglePlay = () => {
             ? playTrack(0) 
             : playerState.currentTrackIndex >= 0 ? audioPlayer.play() : Promise.reject('No track');
         
-        if (isIOS && playerState.currentTrackIndex >= 0 && bgAudioPlayer.src) {
-            bgAudioPlayer.play().catch(() => {});
-        }
-        
         if (playPromise) {
             playPromise.then(() => {
                 playBtn.innerHTML = '<i class="fas fa-pause"></i>';
@@ -712,9 +708,6 @@ const togglePlay = () => {
                     const resumeAudio = () => {
                         audioPlayer.play()
                             .then(() => {
-                                if (bgAudioPlayer.src) {
-                                    bgAudioPlayer.play().catch(() => {});
-                                }
                                 playBtn.innerHTML = '<i class="fas fa-pause"></i>';
                                 playBtn.classList.add('playing');
                                 albumArt.classList.add('playing');
@@ -795,10 +788,6 @@ const handleTrackEnd = () => {
     if (playerState.repeat === 'one') {
         audioPlayer.currentTime = 0;
         audioPlayer.play();
-        if (isIOS && bgAudioPlayer.src) {
-            bgAudioPlayer.currentTime = 0;
-            bgAudioPlayer.play();
-        }
     } else if (playerState.repeat === 'all' || playerState.currentTrackIndex < playerState.tracks.length - 1) {
         nextTrack();
     } else {
