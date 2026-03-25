@@ -515,7 +515,10 @@ const connectAudioSource = () => {
 };
 
 const initVisualizer = () => {
+    if (!visualizer) return;
+    
     canvasCtx = visualizer.getContext('2d');
+    if (!canvasCtx) return;
     
     if (!audioContext) {
         initAudioContext();
@@ -525,18 +528,29 @@ const initVisualizer = () => {
         connectAudioSource();
     }
     
+    if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+    
     drawVisualizer();
 };
 
 const drawVisualizer = () => {
-    if (!canvasCtx) return;
+    if (!canvasCtx || !visualizer) return;
     
-    const width = visualizer.width = visualizer.offsetWidth * window.devicePixelRatio;
-    const height = visualizer.height = visualizer.offsetHeight * window.devicePixelRatio;
+    const rect = visualizer.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) {
+        animationId = requestAnimationFrame(drawVisualizer);
+        return;
+    }
+    
+    const width = visualizer.width = rect.width * window.devicePixelRatio;
+    const height = visualizer.height = rect.height * window.devicePixelRatio;
     
     canvasCtx.clearRect(0, 0, width, height);
     
     if (!playerState.isPlaying || !analyser) {
+        animationId = requestAnimationFrame(drawVisualizer);
         return;
     }
     
@@ -818,9 +832,11 @@ const setProgress = (e) => {
 
 const initProgressDrag = () => {
     let isDragging = false;
+    let hasMoved = false;
     
     const handleStart = (e) => {
         isDragging = true;
+        hasMoved = false;
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
         updateProgressPosition(clientX);
     };
@@ -828,12 +844,21 @@ const initProgressDrag = () => {
     const handleMove = (e) => {
         if (!isDragging) return;
         e.preventDefault();
+        hasMoved = true;
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
         updateProgressPosition(clientX);
     };
     
     const handleEnd = () => {
         isDragging = false;
+    };
+    
+    const handleClick = (e) => {
+        if (hasMoved) {
+            e.preventDefault();
+            e.stopPropagation();
+            hasMoved = false;
+        }
     };
     
     progressContainer.addEventListener('mousedown', handleStart);
@@ -844,6 +869,8 @@ const initProgressDrag = () => {
     
     document.addEventListener('mouseup', handleEnd);
     document.addEventListener('touchend', handleEnd);
+    
+    progressContainer.addEventListener('click', handleClick);
 };
 
 const updateVolumePosition = (clientX) => {
@@ -1295,6 +1322,12 @@ const initApp = async () => {
         
         initDragDrop();
         initKeyboardShortcuts();
+        
+        window.addEventListener('resize', () => {
+            if (playerState.isPlaying && canvasCtx) {
+                drawVisualizer();
+            }
+        });
         
     } catch (error) {
         console.error('Ошибка инициализации:', error);
