@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="AudioPlayer">
-    <meta name="description" content="Современный веб-аудиоплеер с загрузкой и управлением музыкой">
+    <meta name="apple-mobile-web-app-title" content="BrowserBeats">
+    <meta name="description" content="Modern web audio player with music upload and management">
     <meta name="theme-color" content="#0a0a0a">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23111' stroke='%23fff' stroke-width='3'/%3E%3Ccircle cx='50' cy='50' r='20' fill='none' stroke='%23fff' stroke-width='3'/%3E%3Cline x1='50' y1='50' x2='50' y2='20' stroke='%23fff' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
-    <title>AudioPlayer — Минималистичный музыкальный плеер</title>
+    <title>BrowserBeats — Minimalist Music Player</title>
     <script>
         if ('mediaSession' in navigator) {
             navigator.mediaSession.setActionHandler('play', () => {
@@ -35,19 +35,19 @@
                 <div class="header__logo">
                     <i class="fas fa-compact-disc"></i>
                 </div>
-                <h1 class="header__title">AudioPlayer</h1>
+                <h1 class="header__title">BrowserBeats</h1>
             </div>
-            <label class="btn btn--upload" for="fileInput" aria-label="Добавить трек">
+            <label class="btn btn--upload" for="fileInput" aria-label="Add track">
                 <i class="fas fa-plus"></i>
-                <span>Добавить</span>
+                <span>Add</span>
             </label>
-            <input type="file" id="fileInput" accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg,.flac" aria-label="Загрузка аудиофайлов">
+            <input type="file" id="fileInput" accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg,.flac" aria-label="Upload audio files">
         </header>
 
         <main class="main">
             <section class="player">
                 <div class="player__visualizer">
-                    <canvas id="visualizer" aria-label="Визуализация аудио"></canvas>
+                    <canvas id="visualizer" aria-label="Audio visualization"></canvas>
                 </div>
 
                 <div class="player__art">
@@ -57,13 +57,13 @@
                 </div>
 
                 <div class="player__info">
-                    <h2 class="player__title" id="currentTrackTitle">Выберите трек</h2>
+                    <h2 class="player__title" id="currentTrackTitle">Select a track</h2>
                     <p class="player__artist" id="currentTrackArtist">—</p>
                 </div>
 
                 <div class="player__progress">
                     <span class="player__time" id="currentTime">0:00</span>
-                    <div class="player__progress-bar" id="progressContainer" role="slider" aria-label="Прогресс воспроизведения" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+                    <div class="player__progress-bar" id="progressContainer" role="slider" aria-label="Playback progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
                         <div class="player__progress-fill" id="progressBar"></div>
                         <div class="player__progress-thumb"></div>
                     </div>
@@ -71,28 +71,28 @@
                 </div>
 
                 <div class="player__controls">
-                    <button class="btn btn--icon btn--shuffle" id="shuffleBtn" aria-label="Перемешивание">
+                    <button class="btn btn--icon btn--shuffle" id="shuffleBtn" aria-label="Shuffle">
                         <i class="fas fa-shuffle"></i>
                     </button>
-                    <button class="btn btn--icon" id="prevBtn" aria-label="Предыдущий трек">
+                    <button class="btn btn--icon" id="prevBtn" aria-label="Previous track">
                         <i class="fas fa-backward-step"></i>
                     </button>
-                    <button class="btn btn--play" id="playBtn" aria-label="Воспроизведение">
+                    <button class="btn btn--play" id="playBtn" aria-label="Play">
                         <i class="fas fa-play"></i>
                     </button>
-                    <button class="btn btn--icon" id="nextBtn" aria-label="Следующий трек">
+                    <button class="btn btn--icon" id="nextBtn" aria-label="Next track">
                         <i class="fas fa-forward-step"></i>
                     </button>
-                    <button class="btn btn--icon btn--repeat" id="repeatBtn" aria-label="Повтор">
+                    <button class="btn btn--icon btn--repeat" id="repeatBtn" aria-label="Repeat">
                         <i class="fas fa-repeat"></i>
                     </button>
                 </div>
 
                 <div class="player__volume">
-                    <button class="btn btn--icon btn--volume" id="volumeBtn" aria-label="Громкость">
+                    <button class="btn btn--icon btn--volume" id="volumeBtn" aria-label="Volume">
                         <i class="fas fa-volume-high"></i>
                     </button>
-                    <div class="player__volume-bar" id="volumeContainer" role="slider" aria-label="Громкость" aria-valuemin="0" aria-valuemax="100" aria-valuenow="70" tabindex="0">
+                    <div class="player__volume-bar" id="volumeContainer" role="slider" aria-label="Volume" aria-valuemin="0" aria-valuemax="100" aria-valuenow="70" tabindex="0">
                         <div class="player__volume-fill" id="volumeBar"></div>
                     </div>
                 </div>
@@ -100,13 +100,13 @@
 
             <aside class="playlist" id="playlist">
                 <div class="playlist__header">
-                    <h3 class="playlist__title">Плейлист</h3>
-                    <span class="playlist__count" id="trackCount">0 треков</span>
+                    <h3 class="playlist__title">Playlist</h3>
+                    <span class="playlist__count" id="trackCount">0 tracks</span>
                 </div>
-                <div class="playlist__list" id="tracksList" role="list" aria-label="Список треков">
+                <div class="playlist__list" id="tracksList" role="list" aria-label="Track list">
                     <div class="playlist__empty">
                         <i class="fas fa-music"></i>
-                        <p>Добавьте треки для начала</p>
+                        <p>Add tracks to get started</p>
                     </div>
                 </div>
             </aside>
@@ -120,8 +120,8 @@
     <div class="drop-zone" id="dropZone">
         <div class="drop-zone__content">
             <i class="fas fa-cloud-upload-alt"></i>
-            <p>Перетащите аудиофайлы сюда</p>
-            <p class="drop-zone__hint">или нажмите "Добавить" вверху</p>
+            <p>Drag audio files here</p>
+            <p class="drop-zone__hint">or click "Add" at the top</p>
         </div>
     </div>
 

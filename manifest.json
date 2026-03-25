@@ -1,7 +1,7 @@
 {
-    "name": "AudioPlayer",
-    "short_name": "AudioPlayer",
-    "description": "Современный веб-аудиоплеер",
+    "name": "BrowserBeats",
+    "short_name": "BrowserBeats",
+    "description": "Modern web audio player",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#0a0a0a",
