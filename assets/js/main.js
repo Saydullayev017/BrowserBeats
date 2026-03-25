@@ -1294,7 +1294,7 @@ const initApp = async () => {
         audioPlayer.addEventListener('timeupdate', updateTime);
         audioPlayer.addEventListener('ended', handleTrackEnd);
         
-        progressContainer.addEventListener('click', setProgress);
+
         volumeContainer.addEventListener('click', setVolume);
         
         initProgressDrag();
