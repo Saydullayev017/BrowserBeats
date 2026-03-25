@@ -493,13 +493,13 @@ const initAudioContext = () => {
 };
 
 const connectAudioSource = () => {
-    if (isAudioContextConnected || !audioContext || !audioPlayer.src) return;
+    if (!audioContext || !audioPlayer.src) return;
+    
+    if (isAudioContextConnected && mediaStreamSource) {
+        return;
+    }
     
     try {
-        if (mediaStreamSource) {
-            mediaStreamSource.disconnect();
-        }
-        
         if (audioContext.state === 'suspended') {
             audioContext.resume();
         }
@@ -821,7 +821,16 @@ const updateProgressPosition = (clientX) => {
     
     if (duration && !isNaN(duration)) {
         const newTime = (clickX / rect.width) * duration;
-        audioPlayer.currentTime = Math.max(0, Math.min(duration, newTime));
+        const clampedTime = Math.max(0, Math.min(duration, newTime));
+        audioPlayer.currentTime = clampedTime;
+        
+        const progressPercent = (clampedTime / duration) * 100;
+        progressBar.style.width = `${progressPercent}%`;
+        
+        const progressThumb = progressContainer.querySelector('.player__progress-thumb');
+        if (progressThumb) {
+            progressThumb.style.left = `${progressPercent}%`;
+        }
     }
 };
 
@@ -833,10 +842,15 @@ const setProgress = (e) => {
 const initProgressDrag = () => {
     let isDragging = false;
     let hasMoved = false;
+    let wasPlaying = false;
     
     const handleStart = (e) => {
         isDragging = true;
         hasMoved = false;
+        wasPlaying = !audioPlayer.paused;
+        if (wasPlaying) {
+            audioPlayer.pause();
+        }
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
         updateProgressPosition(clientX);
     };
@@ -850,6 +864,9 @@ const initProgressDrag = () => {
     };
     
     const handleEnd = () => {
+        if (wasPlaying && audioPlayer.paused) {
+            audioPlayer.play().catch(() => {});
+        }
         isDragging = false;
     };
     
