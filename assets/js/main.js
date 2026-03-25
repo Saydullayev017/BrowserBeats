@@ -840,54 +840,7 @@ const setProgress = (e) => {
 };
 
 const initProgressDrag = () => {
-    let isDragging = false;
-    let hasMoved = false;
-    let wasPlaying = false;
-    
-    const handleStart = (e) => {
-        isDragging = true;
-        hasMoved = false;
-        wasPlaying = !audioPlayer.paused;
-        if (wasPlaying) {
-            audioPlayer.pause();
-        }
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        updateProgressPosition(clientX);
-    };
-    
-    const handleMove = (e) => {
-        if (!isDragging) return;
-        e.preventDefault();
-        hasMoved = true;
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        updateProgressPosition(clientX);
-    };
-    
-    const handleEnd = () => {
-        if (wasPlaying && audioPlayer.paused) {
-            audioPlayer.play().catch(() => {});
-        }
-        isDragging = false;
-    };
-    
-    const handleClick = (e) => {
-        if (hasMoved) {
-            e.preventDefault();
-            e.stopPropagation();
-            hasMoved = false;
-        }
-    };
-    
-    progressContainer.addEventListener('mousedown', handleStart);
-    progressContainer.addEventListener('touchstart', handleStart, { passive: true });
-    
-    document.addEventListener('mousemove', handleMove);
-    document.addEventListener('touchmove', handleMove, { passive: false });
-    
-    document.addEventListener('mouseup', handleEnd);
-    document.addEventListener('touchend', handleEnd);
-    
-    progressContainer.addEventListener('click', handleClick);
+    // Disabled
 };
 
 const updateVolumePosition = (clientX) => {
@@ -1314,7 +1267,6 @@ const initApp = async () => {
 
         volumeContainer.addEventListener('click', setVolume);
         
-        initProgressDrag();
         initVolumeDrag();
         
         fileInput.addEventListener('change', (e) => {
