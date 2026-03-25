@@ -92,7 +92,6 @@ const createPlaylist = async (name) => {
     };
     await savePlaylistToDB(playlist);
     playerState.playlists.push(playlist);
-    renderPlaylistsList();
     return playlist;
 };
 
@@ -133,85 +132,13 @@ const switchPlaylist = (playlistId) => {
         }
     }
     renderTracksList();
-    renderPlaylistsList();
 };
 
 const loadAllTracks = async () => {
     playerState.tracks = await loadTracksFromDB(db);
 };
 
-const renderPlaylistsList = () => {
-    const playlistContainer = document.getElementById('playlist');
-    let playlistSection = playlistContainer.querySelector('.playlist__sections');
-    
-    if (!playlistSection) {
-        playlistSection = document.createElement('div');
-        playlistSection.className = 'playlist__sections';
-        playlistSection.innerHTML = `
-            <div class="playlist__header">
-                <h3 class="playlist__title">Плейлисты</h3>
-                <button class="btn btn--icon" id="addPlaylistBtn" aria-label="Создать плейлист">
-                    <i class="fas fa-plus"></i>
-                </button>
-            </div>
-            <div class="playlist__items" id="playlistsList"></div>
-        `;
-        playlistContainer.insertBefore(playlistSection, playlistContainer.querySelector('.playlist__header'));
-        
-        document.getElementById('addPlaylistBtn').addEventListener('click', async () => {
-            const name = prompt('Введите название плейлиста:');
-            if (name && name.trim()) {
-                await createPlaylist(name.trim());
-            }
-        });
-    }
-    
-    const playlistsList = document.getElementById('playlistsList');
-    playlistsList.innerHTML = '';
-    
-    playerState.playlists.forEach(playlist => {
-        const isActive = playlist.id === playerState.currentPlaylistId;
-        const trackCount = playlist.id === 'default' 
-            ? playerState.tracks.length 
-            : playlist.trackIds.length;
-        
-        const playlistItem = document.createElement('div');
-        playlistItem.className = `playlist-item ${isActive ? 'active' : ''}`;
-        playlistItem.innerHTML = `
-            <div class="playlist-item__icon">
-                <i class="fas fa-${playlist.id === 'default' ? 'music' : 'folder'}"></i>
-            </div>
-            <div class="playlist-item__info">
-                <div class="playlist-item__name">${playlist.name}</div>
-                <div class="playlist-item__count">${trackCount} трек${getTracksSuffix(trackCount)}</div>
-            </div>
-            ${playlist.id !== 'default' ? '<button class="playlist-item__delete" aria-label="Удалить плейлист"><i class="fas fa-times"></i></button>' : ''}
-        `;
-        
-        playlistItem.addEventListener('click', (e) => {
-            if (!e.target.closest('.playlist-item__delete')) {
-                switchPlaylist(playlist.id);
-            }
-        });
-        
-        if (playlist.id !== 'default') {
-            const deleteBtn = playlistItem.querySelector('.playlist-item__delete');
-            deleteBtn.addEventListener('click', async (e) => {
-                e.stopPropagation();
-                if (confirm(`Удалить плейлист "${playlist.name}"?`)) {
-                    await deletePlaylistFromDB(playlist.id);
-                    playerState.playlists = playerState.playlists.filter(p => p.id !== playlist.id);
-                    if (playerState.currentPlaylistId === playlist.id) {
-                        switchPlaylist('default');
-                    }
-                    renderPlaylistsList();
-                }
-            });
-        }
-        
-        playlistsList.appendChild(playlistItem);
-    });
-};
+
 
 const initDB = () => {
     return new Promise((resolve, reject) => {
@@ -1328,7 +1255,6 @@ const initApp = async () => {
         playerState.tracks = await loadTracksFromDB(db);
         
         await loadPlaylists();
-        renderPlaylistsList();
         renderTracksList();
         
         playBtn.addEventListener('click', togglePlay);
