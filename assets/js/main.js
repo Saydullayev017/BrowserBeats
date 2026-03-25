@@ -29,8 +29,7 @@ let analyser;
 let canvasCtx;
 let animationId;
 let mediaSessionSupported = false;
-let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+let isIOS = false;
 
 const playerState = {
     currentTrackIndex: -1,
