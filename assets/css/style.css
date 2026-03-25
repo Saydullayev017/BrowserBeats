@@ -68,13 +68,14 @@ body {
     min-height: 100vh;
     line-height: 1.5;
     overflow-x: hidden;
+    width: 100%;
 }
 
 .app {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    max-width: 1400px;
+    max-width: 100%;
     margin: 0 auto;
     padding: var(--space-md);
 }
@@ -204,9 +205,12 @@ body {
 .main {
     flex: 1;
     display: grid;
-    grid-template-columns: 1fr 380px;
+    grid-template-columns: 1fr minmax(280px, 380px);
     gap: var(--space-xl);
     padding: var(--space-xl) 0;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .player {
@@ -219,6 +223,8 @@ body {
     background: var(--bg-secondary);
     border-radius: var(--radius-xl);
     border: 1px solid var(--border);
+    width: 100%;
+    max-width: 600px;
 }
 
 .player__visualizer {
@@ -565,6 +571,16 @@ body {
     border-top: 1px solid var(--border);
 }
 
+.footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.footer a:hover {
+    color: var(--text-primary);
+}
+
 .drop-zone {
     position: fixed;
     inset: 0;
@@ -618,6 +634,12 @@ body {
     
     .player {
         padding: var(--space-xl);
+    }
+}
+
+@media (min-width: 1400px) {
+    .main {
+        max-width: 1200px;
     }
 }
 
