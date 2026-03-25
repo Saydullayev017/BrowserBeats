@@ -1,4 +1,4 @@
-# AudioPlayer Web App
+# BrowserBeats Web App
 
 A modern web audio player with the ability to upload and manage your personal music collection directly in your browser. The player uses IndexedDB for local track storage, which requires no server and allows your music to persist between sessions.
 
